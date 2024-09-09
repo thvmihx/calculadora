@@ -34,8 +34,9 @@ function RaizQuadrada(expoente) {
   return total;
 }
 
-function Log10{
+function logaritimo(){
   total = Math.log10(total);
+  return total;
 }
 
 function clean(){
