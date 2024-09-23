@@ -1,18 +1,18 @@
-var total = 0;
+var total = 0; // Variável global total
+var buffer = ''; // Armazena os números digitados temporariamente
+var lastOperator = null; // Armazena o último operador
 
+// Funções de operação
 function Soma(valor) {
   total += valor;
-  return total;
 }
 
 function Subtracao(valor) {
   total -= valor;
-  return total;
 }
 
 function Multiplicacao(valor) {
   total *= valor;
-  return total;
 }
 
 function Divisao(valor) {
@@ -21,65 +21,124 @@ function Divisao(valor) {
     return NaN;
   }
   total /= valor;
-  return total;
 }
 
 function Exponenciacao(valor) {
-  total **=valor;
-  return total;
+  total **= valor;
 }
 
-function RaizQuadrada(expoente) {
-  total = total ** (1/expoente); 
-  return total;
+function RaizQuadrada() {
+  if (total < 0) {
+    console.error("Erro: raiz quadrada de número negativo.");
+    return NaN;
+  }
+  total = Math.sqrt(total);
 }
 
-function logaritimo(){
+function logaritimo() {
+  if (total <= 0) {
+    console.error("Erro: logaritmo de número não positivo.");
+    return NaN;
+  }
   total = Math.log10(total);
-  return total;
 }
 
-function clean(){
-  total= 0;
-  return total;
-}
-           
-// function calculate(value, a, number){
-//   let b = true;
-//   while(b){
-//       b = (valor => (10 ** a))
-//       if (b){
-//         a += number
-//       }
-//     }
-//     a -= number
-//     return a;
-// }
-
-// function logaritimo(valor){
-//   let a = 0;
-
-//   a = calculate (valor, a, 1);
-//   a = calculate (valor, a, 0.1);
-//   a = calculate (valor, a, 0.01);
-//   a = calculate (valor, a, 0.001);
-//   a = calculate (valor, a, 0.0001);
-// }
-
-// logaritimo(2);
-
-
-
-function Operacoes() {
-  total = 2;
-  console.log("soma 9: " + Soma(9));              
-  console.log("sub 3: " + Subtracao(3));          
-  console.log("Mult 4: " + Multiplicacao(4));      
-  console.log("Div 2: " + Divisao(2));  
-  total = 4;          
-  console.log("ex 2: " + Exponenciacao(2));       
-  console.log("raiz: " + RaizQuadrada(2));
-  console.log("log:" + logaritimo());
+function clean() {
+  total = 0;
+  buffer = '';
+  lastOperator = null;
+  updateDisplay();
 }
 
-Operacoes();
+// Atualiza o display da calculadora
+function updateDisplay() {
+  const display = document.getElementById('display');
+  display.innerText = buffer || total;
+}
+
+// Lida com a entrada de números e operadores
+function handleButtonClick(event) {
+  const action = event.target.dataset.action;
+  const value = event.target.innerText;
+
+  // Lida com números e ponto decimal
+  if (!isNaN(value) || value === ".") {
+    buffer += value;
+    updateDisplay();
+    return;
+  }
+
+  // Lida com operações
+  switch (action) {
+    case 'clear':
+      clean();
+      break;
+    case 'log':
+      if (buffer) {
+        total = parseFloat(buffer);
+        logaritimo();
+        buffer = '';
+      }
+      break;
+    case 'exp':
+      if (buffer) {
+        total = parseFloat(buffer);
+        lastOperator = Exponenciacao;
+        buffer = '';
+      }
+      break;
+    case 'sqrt':
+      if (buffer) {
+        total = parseFloat(buffer);
+        RaizQuadrada();
+        buffer = '';
+      }
+      break;
+    case 'add':
+      applyLastOperation();
+      lastOperator = Soma;
+      buffer = ''; // Limpa o buffer após a operação
+      break;
+    case 'subtract':
+      applyLastOperation();
+      lastOperator = Subtracao;
+      buffer = '';
+      break;
+    case 'multiply':
+      applyLastOperation();
+      lastOperator = Multiplicacao;
+      buffer = '';
+      break;
+    case 'divide':
+      applyLastOperation();
+      lastOperator = Divisao;
+      buffer = '';
+      break;
+    case 'result':
+      applyLastOperation();
+      updateDisplay(); // Atualiza o display após calcular o resultado
+      lastOperator = null; // Reseta o operador
+      buffer = ''; // Limpa o buffer após calcular o resultado
+      break;
+  }
+}
+
+// Aplica a última operação armazenada
+function applyLastOperation() {
+  if (lastOperator && buffer) {
+    const parsedBuffer = parseFloat(buffer);
+    lastOperator(parsedBuffer);
+  } else if (!buffer && lastOperator) {
+    lastOperator(total);
+  } else if (buffer) {
+    total = parseFloat(buffer);
+  }
+}
+
+// Adiciona eventos de clique a todos os botões
+document.querySelectorAll('.key').forEach(button => {
+  button.addEventListener('click', handleButtonClick);
+});
+
+// Atualiza o display inicial
+updateDisplay();
