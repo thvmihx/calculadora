@@ -46,15 +46,18 @@ body {
 }
 
 .key:hover {
-    background: #b8e0a8;
+    background: #67c2ae;
     cursor: pointer;
 }
 
 .key[data-action="result"] {
-    background: #a2d5c6;
-    grid-column: span 4;
+    background: #dff0d8;
+
+    grid-column: 4 / 5; /* O botão ocupará da coluna 3 até a coluna 4 */
+    grid-row: 5; /* Colocar na sexta linha para ficar abaixo do botão + */
+    height: calc(2 * 35px + 10px); 
 }
 
 .key[data-action="result"]:hover {
-    background: #80c5af;
+    background: #478b8d;
 }

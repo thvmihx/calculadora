@@ -47,7 +47,7 @@ function clean() {
   total = 0;
   buffer = '';
   lastOperator = null;
-  updateDisplay();
+  updateDisplay(); // Atualiza o display após limpar
 }
 
 // Atualiza o display da calculadora
@@ -78,10 +78,12 @@ function handleButtonClick(event) {
         total = parseFloat(buffer);
         logaritimo();
         buffer = '';
+        updateDisplay(); // Atualiza o display após a operação
       }
       break;
     case 'exp':
       if (buffer) {
+        applyLastOperation(); // Aplica operação anterior antes de mudar a operação
         total = parseFloat(buffer);
         lastOperator = Exponenciacao;
         buffer = '';
@@ -92,30 +94,19 @@ function handleButtonClick(event) {
         total = parseFloat(buffer);
         RaizQuadrada();
         buffer = '';
+        updateDisplay(); // Atualiza o display após a operação
       }
       break;
     case 'add':
-      applyLastOperation();
-      lastOperator = Soma;
-      buffer = ''; // Limpa o buffer após a operação
-      break;
     case 'subtract':
-      applyLastOperation();
-      lastOperator = Subtracao;
-      buffer = '';
-      break;
     case 'multiply':
-      applyLastOperation();
-      lastOperator = Multiplicacao;
-      buffer = '';
-      break;
     case 'divide':
-      applyLastOperation();
-      lastOperator = Divisao;
-      buffer = '';
+      applyLastOperation(); // Aplica a última operação antes de definir a nova
+      lastOperator = getOperationFunction(action); // Define a nova operação
+      buffer = ''; // Limpa o buffer após definir a nova operação
       break;
     case 'result':
-      applyLastOperation();
+      applyLastOperation(); // Aplica a última operação
       updateDisplay(); // Atualiza o display após calcular o resultado
       lastOperator = null; // Reseta o operador
       buffer = ''; // Limpa o buffer após calcular o resultado
@@ -123,16 +114,26 @@ function handleButtonClick(event) {
   }
 }
 
+// Retorna a função correspondente ao operador
+function getOperationFunction(action) {
+  switch (action) {
+    case 'add': return Soma;
+    case 'subtract': return Subtracao;
+    case 'multiply': return Multiplicacao;
+    case 'divide': return Divisao;
+  }
+}
+
 // Aplica a última operação armazenada
 function applyLastOperation() {
   if (lastOperator && buffer) {
     const parsedBuffer = parseFloat(buffer);
-    lastOperator(parsedBuffer);
-  } else if (!buffer && lastOperator) {
-    lastOperator(total);
+    lastOperator(parsedBuffer); // Aplica a operação ao valor no buffer
   } else if (buffer) {
-    total = parseFloat(buffer);
+    total = parseFloat(buffer); // Atualiza o total com o valor do buffer
   }
+  buffer = ''; // Limpa o buffer após aplicar a operação
+  updateDisplay(); // Atualiza o display com o resultado da operação
 }
 
 // Adiciona eventos de clique a todos os botões
