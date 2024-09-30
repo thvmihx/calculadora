@@ -32,7 +32,7 @@ function RaizQuadrada() {
     console.error("Erro: raiz quadrada de número negativo.");
     return NaN;
   }
-  total = Math.sqrt(total).toFixed(3);
+  total = Math.sqrt(total).toFixed(4);
 }
 
 function logaritimo() {
@@ -40,7 +40,7 @@ function logaritimo() {
     console.error("Erro: logaritmo de número não positivo.");
     return NaN;
   }
-  total = Math.log10(total);
+  total = Math.log10(total).toFixed(4);
 }
 
 function clean() {
@@ -88,7 +88,8 @@ function handleButtonClick(event) {
         buffer = '';
         lastOperator = function(expoente){
           Exponenciacao(expoente);
-        }; 
+        }
+   
       }
       break;
     case 'sqrt':
