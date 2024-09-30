@@ -24,7 +24,7 @@ function Divisao(valor) {
 }
 
 function Exponenciacao(valor) {
-  total **= valor;
+  total = Math.pow(total, valor);
 }
 
 function RaizQuadrada() {
@@ -32,7 +32,7 @@ function RaizQuadrada() {
     console.error("Erro: raiz quadrada de número negativo.");
     return NaN;
   }
-  total = Math.sqrt(total);
+  total = Math.sqrt(total).toFixed(3);
 }
 
 function logaritimo() {
@@ -84,9 +84,11 @@ function handleButtonClick(event) {
     case 'exp':
       if (buffer) {
         applyLastOperation(); // Aplica operação anterior antes de mudar a operação
-        total = parseFloat(buffer);
-        lastOperator = Exponenciacao;
+        const base = total || parseFloat(buffer);
         buffer = '';
+        lastOperator = function(expoente){
+          Exponenciacao(expoente);
+        }; 
       }
       break;
     case 'sqrt':
